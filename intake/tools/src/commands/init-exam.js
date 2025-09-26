@@ -2,7 +2,7 @@ const fs = require('fs-extra');
 const path = require('path');
 const yaml = require('js-yaml');
 const { SchemaValidator } = require('../validators/schema-validator.js');
-const { SchemaCommentGenerator } = require('../generators/simple-comment-generator');
+const { SchemaCommentGenerator } = require('../generators/comment-generator');
 
 class InitExamCommand {
   constructor(contextDir = process.cwd()) {
@@ -26,15 +26,28 @@ class InitExamCommand {
       // Ensure exam directory exists
       await fs.ensureDir(examDir);
       
-      // Create clean exam skeleton (guidance goes in comments only)
+      // Create exam skeleton with template structure
       const examSkeleton = {
         metadata: {
           created: new Date().toISOString(),
           version: '1.0.0',
           total_questions: 0
         },
-        questions: [],
-        solutions: []
+        questions: [
+          {
+            id: "",
+            type: "",
+            question: "",
+            category: ""
+          }
+        ],
+        solutions: [
+          {
+            id: "",
+            answer: "",
+            evidence_sources: [""]
+          }
+        ]
       };
       
       // Generate schema-driven comments
