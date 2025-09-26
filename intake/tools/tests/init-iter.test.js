@@ -1,15 +1,16 @@
 const { describe, test, expect, beforeEach, afterEach } = require('@jest/globals');
-const { InitIterCommand } = require('../src/commands/init-iter.js');
+const { UnifiedCommand } = require('../src/commands/unified-command.js');
 const fs = require('fs-extra');
 const path = require('path');
 
-describe('InitIterCommand', () => {
+describe('Init Iteration', () => {
   let command;
   let testContextDir;
   
   beforeEach(async () => {
     testContextDir = path.join(__dirname, 'temp-context');
     await fs.ensureDir(testContextDir);
+    command = new UnifiedCommand(testContextDir);
   });
   
   afterEach(async () => {
@@ -177,7 +178,9 @@ describe('InitIterCommand', () => {
       ]
     };
     
-    await fs.writeJson(path.join(examDir, 'exam.json'), examData);
+    const yaml = require('js-yaml');
+    const yamlContent = yaml.dump(examData);
+    await fs.writeFile(path.join(examDir, 'exam.yaml'), yamlContent);
   }
 
   async function createValidKnowledgeBaseline() {

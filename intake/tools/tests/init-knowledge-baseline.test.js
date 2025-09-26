@@ -1,16 +1,16 @@
 const { describe, test, expect, beforeEach, afterEach } = require('@jest/globals');
-const { InitKnowledgeBaselineCommand } = require('../src/commands/init-knowledge-baseline.js');
+const { UnifiedCommand } = require('../src/commands/unified-command.js');
 const fs = require('fs-extra');
 const path = require('path');
 
-describe('InitKnowledgeBaselineCommand', () => {
+describe('Init Knowledge Baseline', () => {
   let command;
   let testContextDir;
   
   beforeEach(async () => {
     testContextDir = path.join(__dirname, 'temp-context');
     await fs.ensureDir(testContextDir);
-    command = new InitKnowledgeBaselineCommand(testContextDir);
+    command = new UnifiedCommand(testContextDir);
   });
   
   afterEach(async () => {
@@ -18,7 +18,7 @@ describe('InitKnowledgeBaselineCommand', () => {
   });
 
   test('should create knowledge_iter0.json skeleton', async () => {
-    const result = await command.execute();
+    const result = await command.execute("init-knowledge-baseline");
     
     expect(result.success).toBe(true);
     expect(result.message).toMatch(/knowledge baseline skeleton created/i);
@@ -38,7 +38,7 @@ describe('InitKnowledgeBaselineCommand', () => {
   });
 
   test('should validate created knowledge against schema', async () => {
-    const result = await command.execute();
+    const result = await command.execute("init-knowledge-baseline");
     
     expect(result.success).toBe(true);
     expect(result.schemaValid).toBe(true);
@@ -46,7 +46,7 @@ describe('InitKnowledgeBaselineCommand', () => {
 
   test('should not overwrite existing knowledge baseline', async () => {
     // Create baseline first time
-    await command.execute();
+    await command.execute("init-knowledge-baseline");
     
     // Modify the baseline
     const knowledgeFile = path.join(testContextDir, 'knowledge_iter0.json');
@@ -55,7 +55,7 @@ describe('InitKnowledgeBaselineCommand', () => {
     await fs.writeJson(knowledgeFile, originalData);
     
     // Try to create again
-    const result = await command.execute();
+    const result = await command.execute("init-knowledge-baseline");
     
     expect(result.success).toBe(false);
     expect(result.message).toMatch(/already exists/i);
@@ -66,16 +66,16 @@ describe('InitKnowledgeBaselineCommand', () => {
   });
 
   test('should handle filesystem errors gracefully', async () => {
-    const invalidCommand = new InitKnowledgeBaselineCommand('/invalid/path');
+    const invalidCommand = new UnifiedCommand('/invalid/path');
     
-    const result = await invalidCommand.execute();
+    const result = await invalidCommand.execute("init-knowledge-baseline");
     
     expect(result.success).toBe(false);
     expect(result.error).toBeDefined();
   });
 
   test('should create knowledge with proper metadata structure', async () => {
-    const result = await command.execute();
+    const result = await command.execute("init-knowledge-baseline");
     
     expect(result.success).toBe(true);
     

@@ -1,11 +1,19 @@
-# Exam File - Agent Guidance
-# questions.types.description.factual: Questions that require recall of specific facts or information.
-# questions.types.description.conceptual: Questions that test understanding of concepts and ideas.
-# questions.types.description.analytical: Questions that involve analysis and interpretation of information.
-# questions.types.description.synthesis: Questions that require combining information to form new ideas or solutions.
-
+# Exam Schema
+# Schema for learning methodology exams with questions and solutions
+# 
+# TYPE:
+#   factual: Questions that require recall of specific facts or information.
+#   conceptual: Questions that test understanding of concepts and ideas.
+#   analytical: Questions that involve analysis and interpretation of information.
+#   synthesis: Questions that require combining information to form new ideas or solutions.
+#
+# DIFFICULTY:
+#   basic: Questions that test fundamental knowledge and understanding.
+#   intermediate: Questions that require application and analysis of concepts.
+#   advanced: Questions that involve synthesis, evaluation, and complex problem-solving.
+#
 metadata:
-  created: '2025-09-26T08:57:16.607Z'
+  created: '2025-09-26T21:36:29.853Z'
   version: 1.0.0
   total_questions: 0
 questions:
@@ -13,6 +21,7 @@ questions:
     type: ''
     question: ''
     category: ''
+    difficulty: ''
 solutions:
   - id: ''
     answer: ''

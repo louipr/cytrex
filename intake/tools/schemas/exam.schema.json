@@ -32,7 +32,14 @@
             "type": "string"
           },
           "type": {
-            "$ref": "question-types.schema.json"
+            "type": "string",
+            "enum": ["factual", "conceptual", "analytical", "synthesis"],
+            "x-descriptions": {
+              "factual": "Questions that require recall of specific facts or information.",
+              "conceptual": "Questions that test understanding of concepts and ideas.",
+              "analytical": "Questions that involve analysis and interpretation of information.",
+              "synthesis": "Questions that require combining information to form new ideas or solutions."
+            }
           },
           "question": {
             "type": "string"
@@ -41,7 +48,13 @@
             "type": "string"
           },
           "difficulty": {
-            "$ref": "difficulty-levels.schema.json"
+            "type": "string", 
+            "enum": ["basic", "intermediate", "advanced"],
+            "x-descriptions": {
+              "basic": "Questions that test fundamental knowledge and understanding.",
+              "intermediate": "Questions that require application and analysis of concepts.",
+              "advanced": "Questions that involve synthesis, evaluation, and complex problem-solving."
+            }
           }
         }
       }
