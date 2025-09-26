@@ -1,0 +1,28 @@
+# Exam File - Agent Guidance
+# 
+# QUESTION TYPES (use ONLY these types from schema):
+#   factual: Questions that require recall of specific facts or information.
+#   conceptual: Questions that test understanding of concepts and ideas.
+#   analytical: Questions that involve analysis and interpretation of information.
+#   synthesis: Questions that require combining information to form new ideas or solutions.
+#
+# EVIDENCE SOURCES FORMAT: ["filename:line-range"]
+# VALIDATION COMMAND: node learn-tool.js validate-exam
+#
+# STRUCTURE EXAMPLE:
+# questions:
+#   - id: "q1"
+#     type: "factual"  # Must be one of the allowed types above
+#     question: "Your question text here"
+#     category: "your_category"
+# solutions:
+#   - id: "q1"  # Must match question ID
+#     answer: "Comprehensive answer here"
+#     evidence_sources: ["filename:line-range"]
+
+metadata:
+  created: '2025-09-26T08:44:54.760Z'
+  version: 1.0.0
+  total_questions: 0
+questions: []
+solutions: []

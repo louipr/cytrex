@@ -1,0 +1,11 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "string",
+  "enum": ["factual", "conceptual", "analytical", "synthesis"],
+  "x-descriptions": {
+    "factual": "Questions that require recall of specific facts or information.",
+    "conceptual": "Questions that test understanding of concepts and ideas.",
+    "analytical": "Questions that involve analysis and interpretation of information.",
+    "synthesis": "Questions that require combining information to form new ideas or solutions."
+  }
+}

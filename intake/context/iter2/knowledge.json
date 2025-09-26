@@ -1,0 +1,324 @@
+{
+  "metadata": {
+    "knowledge_version": "iter2",
+    "extraction_date": "2025-09-25",
+    "parent_version": "iter1",
+    "improvements_based_on": "iter1/score.json",
+    "improvement_areas": ["edge_cases", "deployment", "integration", "testing_strategy", "synthesis_details"],
+    "confidence_scale": "0.0-1.0"
+  },
+  "technology_stack": {
+    "primary_language": {
+      "value": "TypeScript",
+      "confidence": 0.95,
+      "evidence_sources": ["cli_and_tests.md:line_847", "architecture.md", "redesign_architecture.md"],
+      "supporting_details": "All code examples, API references, and architectural decisions centered on TypeScript with comprehensive compiler integration"
+    },
+    "secondary_language": {
+      "value": "JavaScript", 
+      "confidence": 0.90,
+      "evidence_sources": ["cli_and_tests.md:line_848", "sw_requirements.md"],
+      "supporting_details": "Explicit support for JavaScript analysis alongside TypeScript, mentioned as secondary target"
+    },
+    "runtime": {
+      "value": "Node.js ^18.0.0",
+      "confidence": 0.95,
+      "evidence_sources": ["architecture.md:line_941"],
+      "supporting_details": "Runtime environment requirement clearly specified with version constraint"
+    },
+    "package_manager": {
+      "value": "npm",
+      "confidence": 0.90,
+      "evidence_sources": ["cli_and_tests.md"],
+      "supporting_details": "Distribution and installation via npm with global installation recommended"
+    },
+    "testing_framework": {
+      "value": "Jest with built-in mocking capabilities",
+      "confidence": 0.85,
+      "evidence_sources": ["cli_and_tests.md"],
+      "supporting_details": "Unit and integration testing with Jest providing comprehensive mocking support for complex scenarios"
+    }
+  },
+  "core_architecture": {
+    "parsing_approach": {
+      "value": "TypeScript Compiler API",
+      "confidence": 0.95,
+      "evidence_sources": ["redesign_architecture.md:line_51"],
+      "supporting_details": "Replaced regex-based parsing for proper AST analysis, handles complex TypeScript constructs and import resolution"
+    },
+    "analysis_phases": {
+      "value": "Phase 1: Build complete AST using TypeScript API, Phase 2: Apply built-in rules with proper import resolution, Phase 3: Generate comprehensive reports with actionable insights",
+      "confidence": 0.95,
+      "evidence_sources": ["redesign_architecture.md:line_29"],
+      "supporting_details": "Three-phase approach ensures proper analysis flow with complete TypeScript integration and actionable output"
+    },
+    "main_components": {
+      "value": ["AST Parser", "Rule Engine", "Report Generator", "Configuration Manager"],
+      "confidence": 0.85,
+      "evidence_sources": ["architecture.md"],
+      "supporting_details": "Four core components of the analysis engine working in coordination"
+    },
+    "performance_optimization": {
+      "value": "Built-in Node.js worker threads for parallel processing and incremental analysis",
+      "confidence": 0.95,
+      "evidence_sources": ["architecture.md:line_955"],
+      "supporting_details": "Built-in Node.js parallelization for large codebases with incremental analysis for watch mode efficiency"
+    }
+  },
+  "rules_system": {
+    "total_builtin_rules": {
+      "value": 15,
+      "confidence": 0.90,
+      "evidence_sources": ["sw_requirements.md", "builtin_rules_implementation.md"],
+      "supporting_details": "Comprehensive set covering complexity, naming, security, imports, deprecated APIs, and more"
+    },
+    "complexity_threshold": {
+      "value": 10,
+      "confidence": 0.85,
+      "evidence_sources": ["builtin_rules_implementation.md"],
+      "supporting_details": "Default cyclomatic complexity warning threshold for method analysis"
+    },
+    "naming_conventions": {
+      "value": "PascalCase for classes, camelCase for variables/functions",
+      "confidence": 0.90,
+      "evidence_sources": ["builtin_rules_implementation.md"],
+      "supporting_details": "NamingConventionRule enforces TypeScript coding standards with configurable patterns"
+    },
+    "security_features": {
+      "value": "XSS detection via innerHTML assignments, eval() usage, unsanitized user input in template literals and DOM manipulation",
+      "confidence": 0.90,
+      "evidence_sources": ["builtin_rules_implementation.md"],
+      "supporting_details": "SecurityRule identifies common XSS attack vectors including template literals and DOM manipulation patterns"
+    },
+    "configuration_format": {
+      "value": "YAML (.yml/.yaml)",
+      "confidence": 0.90,
+      "evidence_sources": ["sw_requirements.md"],
+      "supporting_details": "Rule customization via YAML configuration files with hierarchical structure"
+    },
+    "circular_dependency_detection": {
+      "value": "AST traversal builds dependency graph and detects cycles using graph algorithms",
+      "confidence": 0.85,
+      "evidence_sources": ["builtin_rules_implementation.md"],
+      "supporting_details": "Advanced graph traversal with cycle detection algorithms to identify circular dependencies"
+    }
+  },
+  "cli_interface": {
+    "command_name": {
+      "value": "cytrex",
+      "confidence": 0.95,
+      "evidence_sources": ["cli_and_tests.md"],
+      "supporting_details": "Main CLI command for the tool with comprehensive subcommand structure"
+    },
+    "output_formats": {
+      "value": ["text", "json", "html", "xml"],
+      "confidence": 0.90,
+      "evidence_sources": ["cli_and_tests.md"],
+      "supporting_details": "Multiple output format support for different integration scenarios and reporting needs"
+    },
+    "watch_mode": {
+      "value": "Real-time monitoring with file system watchers for continuous analysis",
+      "confidence": 0.90,
+      "evidence_sources": ["cli_and_tests.md"],
+      "supporting_details": "--watch flag enables continuous analysis during development with incremental processing"
+    },
+    "project_discovery": {
+      "value": "Auto-discovery with include/exclude patterns and tsconfig.json project boundaries",
+      "confidence": 0.90,
+      "evidence_sources": ["cli_and_tests.md"],
+      "supporting_details": "Intelligent file filtering with TypeScript project boundary detection via tsconfig.json"
+    },
+    "config_files": {
+      "value": ["cytrex.config.yml", "cytrex.config.yaml", ".cytrexrc"],
+      "confidence": 0.90,
+      "evidence_sources": ["sw_requirements.md"],
+      "supporting_details": "Multiple configuration file name options with hierarchical loading priority"
+    }
+  },
+  "testing_requirements": {
+    "coverage_minimum": {
+      "value": "85%",
+      "confidence": 0.95,
+      "evidence_sources": ["cli_and_tests.md"],
+      "supporting_details": "Minimum test coverage requirement for quality assurance with comprehensive reporting"
+    },
+    "test_types": {
+      "value": ["unit tests", "integration tests", "end-to-end tests", "performance tests", "edge case validation"],
+      "confidence": 0.95,
+      "evidence_sources": ["cli_and_tests.md"],
+      "supporting_details": "Comprehensive testing strategy covering all aspects from unit to system level with edge case focus"
+    },
+    "ci_platforms": {
+      "value": ["GitHub Actions", "GitLab CI", "Jenkins", "CircleCI"],
+      "confidence": 0.85,
+      "evidence_sources": ["cli_and_tests.md"],
+      "supporting_details": "Multi-platform CI/CD support with standardized workflows and matrix testing"
+    },
+    "performance_testing_strategy": {
+      "value": "Automated testing with large codebases, memory usage monitoring, analysis time benchmarks, and parallel processing validation",
+      "confidence": 0.85,
+      "evidence_sources": ["cli_and_tests.md"],
+      "supporting_details": "Comprehensive performance validation ensuring scalability with parallel processing verification"
+    },
+    "mocking_library": {
+      "value": "Jest built-in mocking capabilities",
+      "confidence": 0.80,
+      "evidence_sources": ["cli_and_tests.md"],
+      "supporting_details": "Testing framework with integrated mocking capabilities for complex dependency scenarios"
+    }
+  },
+  "performance_targets": {
+    "analysis_time_10k_lines": {
+      "value": "Under 30 seconds",
+      "confidence": 0.90,
+      "evidence_sources": ["sw_requirements.md"],
+      "supporting_details": "Performance target for medium-sized projects with comprehensive analysis"
+    },
+    "memory_limit": {
+      "value": "500MB maximum",
+      "confidence": 0.85,
+      "evidence_sources": ["sw_requirements.md"],
+      "supporting_details": "Memory usage constraint for efficient resource utilization"
+    },
+    "parallel_processing": {
+      "value": "Built-in Node.js worker threads for parallel file processing and rule execution",
+      "confidence": 0.95,
+      "evidence_sources": ["architecture.md:line_955"],
+      "supporting_details": "Built-in Node.js parallelization utilizing worker threads for both file processing and rule execution"
+    },
+    "caching_strategy": {
+      "value": "AST caching, rule result caching, and incremental analysis for unchanged files",
+      "confidence": 0.90,
+      "evidence_sources": ["architecture.md"],
+      "supporting_details": "Multiple caching layers including AST persistence and rule result memoization for optimization"
+    },
+    "incremental_analysis": {
+      "value": "Only analyzes changed files and their dependencies, maintaining cache for unchanged code",
+      "confidence": 0.85,
+      "evidence_sources": ["architecture.md"],
+      "supporting_details": "Watch mode efficiency through dependency tracking and selective re-analysis of changed components"
+    }
+  },
+  "critical_edge_cases": {
+    "typescript_import_resolution": {
+      "value": "TypeScript allows importing .js files that resolve to .ts files, causing module resolution confusion in static analysis",
+      "confidence": 0.95,
+      "evidence_sources": ["redesign_architecture.md:line_1", "redesign_architecture.md:line_6"],
+      "supporting_details": "SparkApplication.ts false positive due to ESM import resolution complexity with .js → .ts mapping"
+    },
+    "dynamic_service_containers": {
+      "value": "Uses TypeScript's compiler service to trace dynamic dependency injection and service registration patterns",
+      "confidence": 0.95,
+      "evidence_sources": ["redesign_architecture.md"],
+      "supporting_details": "Advanced pattern recognition for dependency containers using compiler service for dynamic analysis"
+    },
+    "false_positive_reduction": {
+      "value": "57% reduction achieved through proper TypeScript Compiler API usage with comprehensive import resolution",
+      "confidence": 0.95,
+      "evidence_sources": ["redesign_architecture.md:line_1"],
+      "supporting_details": "Real-world validation results from architectural improvements focusing on import resolution"
+    },
+    "regex_parsing_problems": {
+      "value": "Regex-based parsing inadequate for complex TypeScript constructs, import resolution, and dynamic patterns",
+      "confidence": 0.95,
+      "evidence_sources": ["redesign_architecture.md:line_12"],
+      "supporting_details": "Root cause of original false positive issues due to inability to handle TypeScript complexity"
+    },
+    "minified_code_analysis": {
+      "value": "Source map analysis to trace back to original code for meaningful analysis",
+      "confidence": 0.75,
+      "evidence_sources": ["architecture.md"],
+      "supporting_details": "Handles minified code through source map parsing to provide meaningful analysis of original code"
+    }
+  },
+  "integration_capabilities": {
+    "ide_extensions": {
+      "value": ["VS Code", "WebStorm", "Sublime Text"],
+      "confidence": 0.80,
+      "evidence_sources": ["implementation_guide.md"],
+      "supporting_details": "Planned IDE integration support with real-time analysis capabilities"
+    },
+    "linting_integration": {
+      "value": "Complementary to ESLint/TSLint with non-conflicting rule sets",
+      "confidence": 0.85,
+      "evidence_sources": ["sw_requirements.md"],
+      "supporting_details": "Works alongside existing linting tools providing additional analysis without rule conflicts"
+    },
+    "webhook_endpoints": {
+      "value": ["/webhook/analysis-complete", "/webhook/error"],
+      "confidence": 0.80,
+      "evidence_sources": ["cli_and_tests.md"],
+      "supporting_details": "CI/CD integration webhook support for automated pipeline integration"
+    },
+    "plugin_architecture": {
+      "value": "Plugin system allows custom rule development with TypeScript interfaces and standardized rule registration",
+      "confidence": 0.80,
+      "evidence_sources": ["architecture.md"],
+      "supporting_details": "Extensible architecture supporting custom rule development with standardized interfaces and registration mechanisms"
+    },
+    "export_formats": {
+      "value": ["JSON", "XML", "CSV", "HTML reports"],
+      "confidence": 0.85,
+      "evidence_sources": ["cli_and_tests.md"],
+      "supporting_details": "Multiple result export formats for different reporting and integration scenarios"
+    }
+  },
+  "deployment_strategy": {
+    "distribution_method": {
+      "value": "npm package manager",
+      "confidence": 0.95,
+      "evidence_sources": ["cli_and_tests.md"],
+      "supporting_details": "Standard Node.js package distribution through npm registry"
+    },
+    "installation_command": {
+      "value": "npm install -g cytrex",
+      "confidence": 0.90,
+      "evidence_sources": ["cli_and_tests.md"],
+      "supporting_details": "Global npm installation recommended for CLI accessibility"
+    },
+    "versioning_strategy": {
+      "value": "Semantic versioning (semver) with automated changelog generation",
+      "confidence": 0.85,
+      "evidence_sources": ["implementation_guide.md"],
+      "supporting_details": "Standard semver approach with automated changelog generation for release management"
+    },
+    "backward_compatibility": {
+      "value": "Deprecation warnings, configuration migration tools, and gradual feature rollouts",
+      "confidence": 0.80,
+      "evidence_sources": ["implementation_guide.md"],
+      "supporting_details": "Comprehensive backward compatibility strategy including migration tools and gradual rollouts"
+    },
+    "github_actions": {
+      "value": ["CI/CD pipeline", "release automation", "testing matrix", "security scanning"],
+      "confidence": 0.85,
+      "evidence_sources": ["cli_and_tests.md"],
+      "supporting_details": "Comprehensive workflow automation including security scanning and matrix testing"
+    }
+  },
+  "architectural_insights": {
+    "key_redesign_driver": {
+      "value": "Real-world false positives revealed inadequacy of regex parsing and need for proper TypeScript Compiler API integration",
+      "confidence": 0.95,
+      "evidence_sources": ["redesign_architecture.md"],
+      "supporting_details": "Practical validation led to architectural pivot focusing on proper compiler integration"
+    },
+    "compiler_api_benefits": {
+      "value": "Proper import resolution, dynamic pattern handling, reduced false positives, and native TypeScript understanding",
+      "confidence": 0.95,
+      "evidence_sources": ["redesign_architecture.md:line_77"],
+      "supporting_details": "TypeScript's native resolution with .js to .ts mapping and dynamic import handling vs custom logic"
+    },
+    "validation_metrics": {
+      "value": "57% false positive reduction with successful edge case handling across multiple real-world scenarios",
+      "confidence": 0.95,
+      "evidence_sources": ["redesign_architecture.md:line_1"],
+      "supporting_details": "Quantified improvement from architectural changes with comprehensive edge case validation"
+    },
+    "module_resolution_solution": {
+      "value": "Uses TypeScript's native module resolution with proper .js to .ts mapping and dynamic import handling",
+      "confidence": 0.90,
+      "evidence_sources": ["redesign_architecture.md"],
+      "supporting_details": "Leverages compiler's built-in resolution instead of recreating complex logic with regex patterns"
+    }
+  }
+}
