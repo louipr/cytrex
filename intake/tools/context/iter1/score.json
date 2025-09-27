@@ -1,0 +1,536 @@
+{
+  "metadata": {
+    "iteration": "iter1",
+    "graded_by": "manual_agent_supervised",
+    "grading_date": "2025-09-27T06:40:00.000Z",
+    "total_questions": 25,
+    "rubric_version": "1.0.0"
+  },
+  "grading_rubric": {
+    "factual": {
+      "max_points": 10,
+      "criteria": "Accuracy of facts, completeness of required information, proper evidence citation"
+    },
+    "conceptual": {
+      "max_points": 10,
+      "criteria": "Understanding of concepts, logical connections, explanation quality"
+    },
+    "analytical": {
+      "max_points": 10,
+      "criteria": "Analysis depth, problem-solving approach, synthesis of information"
+    },
+    "synthesis": {
+      "max_points": 10,
+      "criteria": "Integration of concepts, creative solutions, comprehensive understanding"
+    }
+  },
+  "scores": [
+    {
+      "id": "Q001",
+      "question_type": "factual",
+      "points_earned": 7,
+      "max_points": 10,
+      "analysis": {
+        "strengths": [
+          "Correctly identified ES2022+ syntax support",
+          "Correctly mentioned TypeScript 5.0+ compatibility", 
+          "Identified symbol resolution capabilities"
+        ],
+        "weaknesses": [
+          "Mixed AST parsing with symbol resolution (distinct components)",
+          "Missed JSX/TSX parsing requirement from solution",
+          "Third component not clearly distinguished from first two"
+        ],
+        "evidence_quality": "Good - cited K001 and K003 knowledge entries",
+        "accuracy_assessment": "Partially correct - 2/3 core components accurate"
+      }
+    },
+    {
+      "id": "Q002", 
+      "question_type": "conceptual",
+      "points_earned": 9,
+      "max_points": 10,
+      "analysis": {
+        "strengths": [
+          "Correctly explained call graph construction process",
+          "Accurate description of orphaned function detection logic",
+          "Good understanding of reachability analysis concept"
+        ],
+        "weaknesses": [
+          "Slightly less precise than official solution on module tracking details"
+        ],
+        "evidence_quality": "Excellent - cited K002 and K004 with logical reasoning",
+        "accuracy_assessment": "Highly accurate - strong conceptual understanding"
+      }
+    },
+    {
+      "id": "Q003",
+      "question_type": "analytical", 
+      "points_earned": 10,
+      "max_points": 10,
+      "analysis": {
+        "strengths": [
+          "Perfect match to official solution",
+          "Correct thresholds: cyclomatic > 10, cognitive > 15",
+          "Direct citation from knowledge base"
+        ],
+        "weaknesses": [],
+        "evidence_quality": "Excellent - direct knowledge base citation K006",
+        "accuracy_assessment": "Perfect accuracy - exact match"
+      }
+    },
+    {
+      "id": "Q004",
+      "question_type": "factual",
+      "points_earned": 6,
+      "max_points": 10,
+      "analysis": {
+        "strengths": [
+          "Mentioned TypeScript 5.0+ compatibility",
+          "Included ES2022+ syntax support",
+          "Added TypeScript-specific detection features"
+        ],
+        "weaknesses": [
+          "Missed source maps preservation requirement",
+          "Missed JSX/TSX handling requirement", 
+          "Less comprehensive than official solution"
+        ],
+        "evidence_quality": "Good - cited K001 and K009",
+        "accuracy_assessment": "Partially correct - covered some but not all requirements"
+      }
+    },
+    {
+      "id": "Q005",
+      "question_type": "conceptual",
+      "points_earned": 8,
+      "max_points": 10,
+      "analysis": {
+        "strengths": [
+          "Correctly identified AST visitor pattern usage",
+          "Good understanding of plugin architecture",
+          "Mentioned extensible rule system and lifecycle hooks"
+        ],
+        "weaknesses": [
+          "Less specific about shared context and inter-plugin communication details"
+        ],
+        "evidence_quality": "Good - cited K018 and K019 with logical connections",
+        "accuracy_assessment": "Good accuracy - solid conceptual understanding"
+      }
+    },
+    {
+      "id": "Q006",
+      "question_type": "factual",
+      "points_earned": 10,
+      "max_points": 10,
+      "analysis": {
+        "strengths": [
+          "Perfect match to official solution",
+          "All performance targets correct",
+          "Included incremental analysis requirement"
+        ],
+        "weaknesses": [],
+        "evidence_quality": "Excellent - cited K012 and K014 accurately",
+        "accuracy_assessment": "Perfect accuracy - complete information"
+      }
+    },
+    {
+      "id": "Q007",
+      "question_type": "conceptual",
+      "points_earned": 8,
+      "max_points": 10,
+      "analysis": {
+        "strengths": [
+          "Good understanding of entry point definition",
+          "Correct description of exclusion patterns",
+          "Understanding of their complementary relationship"
+        ],
+        "weaknesses": [
+          "Less detailed than official solution on focused analysis outcome"
+        ],
+        "evidence_quality": "Good - cited K015 and K016",
+        "accuracy_assessment": "Good accuracy - solid understanding"
+      }
+    },
+    {
+      "id": "Q008",
+      "question_type": "synthesis",
+      "points_earned": 2,
+      "max_points": 10,
+      "analysis": {
+        "strengths": [
+          "Honest admission of knowledge limitations",
+          "Appropriate low confidence score (0.20)"
+        ],
+        "weaknesses": [
+          "Did not provide design solution as requested",
+          "Missed opportunity to synthesize available component knowledge"
+        ],
+        "evidence_quality": "Good - honest about knowledge gaps",
+        "accuracy_assessment": "Incomplete - requirements not met but honest approach"
+      }
+    },
+    {
+      "id": "Q009",
+      "question_type": "factual",
+      "points_earned": 1,
+      "max_points": 10,
+      "analysis": {
+        "strengths": [
+          "Honest admission of knowledge limitations",
+          "Appropriate low confidence score (0.10)"
+        ],
+        "weaknesses": [
+          "No answer provided to specific technical question",
+          "Knowledge gap in important TypeScript concept"
+        ],
+        "evidence_quality": "Good - honest about limitations",
+        "accuracy_assessment": "No information provided - knowledge gap identified"
+      }
+    },
+    {
+      "id": "Q010",
+      "question_type": "factual",
+      "points_earned": 3,
+      "max_points": 10,
+      "analysis": {
+        "strengths": [
+          "Mentioned entry point configuration concepts",
+          "Honest about knowledge limitations"
+        ],
+        "weaknesses": [
+          "Failed to identify three specific types",
+          "Missed package.json analysis, CLI patterns, conventional entries"
+        ],
+        "evidence_quality": "Good - cited K015 but admitted limitations",
+        "accuracy_assessment": "Minimal accuracy - general concepts only"
+      }
+    },
+    {
+      "id": "Q011",
+      "question_type": "analytical",
+      "points_earned": 2,
+      "max_points": 10,
+      "analysis": {
+        "strengths": [
+          "Mentioned dynamic method handling context",
+          "Honest about knowledge limitations"
+        ],
+        "weaknesses": [
+          "Did not differentiate service container vs command bus patterns",
+          "Missed specific pattern recognition mechanisms"
+        ],
+        "evidence_quality": "Limited - cited K005 but acknowledged gaps",
+        "accuracy_assessment": "Minimal accuracy - missing core differentiators"
+      }
+    },
+    {
+      "id": "Q012",
+      "question_type": "conceptual",
+      "points_earned": 1,
+      "max_points": 10,
+      "analysis": {
+        "strengths": [
+          "Honest admission of knowledge gap",
+          "Appropriate low confidence score"
+        ],
+        "weaknesses": [
+          "Completely missing concept understanding",
+          "Important architectural pattern not recognized"
+        ],
+        "evidence_quality": "Good - honest about limitations",
+        "accuracy_assessment": "No accuracy - concept not covered"
+      }
+    },
+    {
+      "id": "Q013",
+      "question_type": "analytical",
+      "points_earned": 1,
+      "max_points": 10,
+      "analysis": {
+        "strengths": [
+          "Honest admission of knowledge limitations",
+          "Referenced performance knowledge entries"
+        ],
+        "weaknesses": [
+          "Missed significant performance improvements",
+          "Failed to analyze single-pass benefits"
+        ],
+        "evidence_quality": "Limited - mentioned K012, K014 but couldn't connect",
+        "accuracy_assessment": "No accuracy - missed all performance benefits"
+      }
+    },
+    {
+      "id": "Q014",
+      "question_type": "factual",
+      "points_earned": 1,
+      "max_points": 10,
+      "analysis": {
+        "strengths": [
+          "Honest admission of knowledge limitations"
+        ],
+        "weaknesses": [
+          "No information provided about TypeScript configuration",
+          "Missed tsconfig.json requirements entirely"
+        ],
+        "evidence_quality": "Good - honest about limitations",
+        "accuracy_assessment": "No accuracy - complete knowledge gap"
+      }
+    },
+    {
+      "id": "Q015",
+      "question_type": "factual", 
+      "points_earned": 1,
+      "max_points": 10,
+      "analysis": {
+        "strengths": [
+          "Honest admission of knowledge limitations"
+        ],
+        "weaknesses": [
+          "No information about TypeScript Compiler API usage",
+          "Critical technical component not covered"
+        ],
+        "evidence_quality": "Good - honest about limitations",
+        "accuracy_assessment": "No accuracy - knowledge gap in core component"
+      }
+    },
+    {
+      "id": "Q016",
+      "question_type": "analytical",
+      "points_earned": 1,
+      "max_points": 10,
+      "analysis": {
+        "strengths": [
+          "Honest admission of knowledge limitations"
+        ],
+        "weaknesses": [
+          "No analysis of scattered responsibility vs unified approach",
+          "Missed opportunity for architectural comparison"
+        ],
+        "evidence_quality": "Good - honest about limitations",
+        "accuracy_assessment": "No accuracy - architectural analysis missing"
+      }
+    },
+    {
+      "id": "Q017",
+      "question_type": "factual",
+      "points_earned": 9,
+      "max_points": 10,
+      "analysis": {
+        "strengths": [
+          "Correctly identified all three main components",
+          "Added relevant dynamic method handling context",
+          "Strong knowledge base citation"
+        ],
+        "weaknesses": [
+          "Slightly less structured than official solution"
+        ],
+        "evidence_quality": "Excellent - cited K004 and K005 accurately",
+        "accuracy_assessment": "Highly accurate - all components identified"
+      }
+    },
+    {
+      "id": "Q018",
+      "question_type": "conceptual",
+      "points_earned": 4,
+      "max_points": 10,
+      "analysis": {
+        "strengths": [
+          "Mentioned rule configuration aspects",
+          "Honest about knowledge limitations"
+        ],
+        "weaknesses": [
+          "Missed config loading and merging mechanisms",
+          "Incomplete understanding of the integration"
+        ],
+        "evidence_quality": "Limited - cited K017 but acknowledged gaps",
+        "accuracy_assessment": "Partial accuracy - configuration aspects only"
+      }
+    },
+    {
+      "id": "Q019",
+      "question_type": "factual",
+      "points_earned": 1,
+      "max_points": 10,
+      "analysis": {
+        "strengths": [
+          "Honest admission of knowledge gap"
+        ],
+        "weaknesses": [
+          "No information about Jest testing requirements",
+          "Missing coverage threshold specifications"
+        ],
+        "evidence_quality": "Good - honest about limitations",
+        "accuracy_assessment": "No accuracy - testing knowledge gap"
+      }
+    },
+    {
+      "id": "Q020",
+      "question_type": "conceptual",
+      "points_earned": 1,
+      "max_points": 10,
+      "analysis": {
+        "strengths": [
+          "Honest admission of knowledge limitations"
+        ],
+        "weaknesses": [
+          "No understanding of CLI design principles",
+          "Missed command structure and parsing relationship"
+        ],
+        "evidence_quality": "Good - honest about limitations",
+        "accuracy_assessment": "No accuracy - CLI design knowledge gap"
+      }
+    },
+    {
+      "id": "Q021",
+      "question_type": "synthesis",
+      "points_earned": 5,
+      "max_points": 10,
+      "analysis": {
+        "strengths": [
+          "Identified relevant JSON output format components",
+          "Attempted to address type system aspects",
+          "Good use of available knowledge"
+        ],
+        "weaknesses": [
+          "Incomplete type system design",
+          "Missed AnalyzerConfig and AnalysisResult specifics"
+        ],
+        "evidence_quality": "Good - cited K020 and K021",
+        "accuracy_assessment": "Partial accuracy - output format correct but incomplete design"
+      }
+    },
+    {
+      "id": "Q022",
+      "question_type": "conceptual",
+      "points_earned": 4,
+      "max_points": 10,
+      "analysis": {
+        "strengths": [
+          "Understood graceful degradation concept",
+          "Connected to stability requirements"
+        ],
+        "weaknesses": [
+          "Missed custom error class implementation details",
+          "Incomplete understanding of error handling mechanisms"
+        ],
+        "evidence_quality": "Good - cited K024 for stability context",
+        "accuracy_assessment": "Partial accuracy - concept understood but implementation missing"
+      }
+    },
+    {
+      "id": "Q023",
+      "question_type": "analytical",
+      "points_earned": 3,
+      "max_points": 10,
+      "analysis": {
+        "strengths": [
+          "Made logical connection between performance and caching",
+          "Cited relevant incremental analysis requirements"
+        ],
+        "weaknesses": [
+          "No specific cache management mechanisms described",
+          "Analysis remained at high level without details"
+        ],
+        "evidence_quality": "Limited - cited K014 but couldn't elaborate",
+        "accuracy_assessment": "Minimal accuracy - logical connection but no specifics"
+      }
+    },
+    {
+      "id": "Q024",
+      "question_type": "synthesis",
+      "points_earned": 1,
+      "max_points": 10,
+      "analysis": {
+        "strengths": [
+          "Honest admission of knowledge gap"
+        ],
+        "weaknesses": [
+          "No architectural design principles provided",
+          "Missed modular structure requirements entirely"
+        ],
+        "evidence_quality": "Good - honest about limitations",
+        "accuracy_assessment": "No accuracy - architectural design knowledge gap"
+      }
+    },
+    {
+      "id": "Q025",
+      "question_type": "synthesis",
+      "points_earned": 6,
+      "max_points": 10,
+      "analysis": {
+        "strengths": [
+          "Good understanding of plugin architecture components",
+          "Mentioned key elements: lifecycle hooks, visitor pattern, API",
+          "Honest about design limitations"
+        ],
+        "weaknesses": [
+          "Incomplete integration design between built-in and custom rules",
+          "Lacked specific architecture details"
+        ],
+        "evidence_quality": "Good - cited K018 and K019 accurately",
+        "accuracy_assessment": "Good accuracy - solid foundation but incomplete design"
+      }
+    }
+  ],
+  "summary": {
+    "total_points_earned": 95,
+    "total_possible_points": 250,
+    "percentage_score": 38.0,
+    "grade": "F",
+    "questions_by_performance": {
+      "excellent": 3,
+      "good": 4, 
+      "fair": 5,
+      "poor": 13
+    }
+  },
+  "knowledge_gaps_identified": [
+    "TypeScript import resolution mechanisms (.js to .ts)",
+    "TypeScript Compiler API usage and program creation", 
+    "TypeScript configuration (tsconfig.json) requirements",
+    "Architectural core protection patterns", 
+    "Service container vs command bus pattern differences",
+    "Single-pass analysis performance benefits and comparisons",
+    "Entry point automatic detection types (package.json, CLI, conventional)",
+    "JSX/TSX parsing requirements and source map preservation",
+    "Dynamic method detection patterns and keep-alive mechanisms",
+    "Confidence-based detection mechanisms",
+    "Jest testing configuration and coverage thresholds",
+    "CLI command structure and argument parsing design",
+    "Cache management and incremental analysis integration",
+    "Custom error classes for graceful degradation",
+    "Modular file structure principles for production architecture",
+    "Config loading, validation, and merging mechanisms"
+  ],
+  "recommendations": [
+    "HIGH PRIORITY: Study TypeScript Compiler API and configuration",
+    "HIGH PRIORITY: Learn architectural patterns (service container, command bus, core protection)",
+    "MEDIUM: Understand performance optimization (single-pass analysis, caching)",
+    "MEDIUM: Study testing frameworks (Jest configuration, coverage)",
+    "MEDIUM: Learn CLI design principles and argument parsing",
+    "LOW: Practice synthesis questions - combining knowledge into complete solutions",
+    "LOW: Focus on implementation details vs high-level concepts",
+    "LEARNING STRATEGY: Read implementation guides more thoroughly",
+    "LEARNING STRATEGY: Focus on missing technical domains in next iteration"
+  ],
+  "iteration_insights": {
+    "strengths": [
+      "Honest about knowledge limitations (prevents overconfidence)",
+      "Good use of available knowledge base citations", 
+      "Strong performance on questions with direct knowledge matches",
+      "Appropriate confidence scoring aligned with actual knowledge"
+    ],
+    "critical_weaknesses": [
+      "Major gaps in TypeScript-specific technical knowledge",
+      "Limited architectural design and pattern knowledge",
+      "Insufficient implementation details vs conceptual understanding",
+      "Poor synthesis capability - struggle to combine knowledge into solutions"
+    ],
+    "behavioral_observations": [
+      "POSITIVE: No attempt to fabricate answers from training knowledge",
+      "POSITIVE: Maintained blind testing integrity throughout",
+      "POSITIVE: Consistent citation of knowledge base sources",
+      "CONCERN: High number of knowledge gaps in critical technical areas"
+    ]
+  }
+}

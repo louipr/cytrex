@@ -29,8 +29,19 @@ async function executeCommand(operation, params = {}) {
       
       // Handle specific output formatting
       if (result.examPath) console.log('📁 Exam file created at:', result.examPath);
+      if (result.examDraftPath) console.log('📁 Exam draft skeleton created at:', result.examDraftPath);
       if (result.knowledgePath) console.log('📁 Knowledge file created at:', result.knowledgePath);
       if (result.iterationPath) console.log('📁 Iteration directory created at:', result.iterationPath);
+      if (result.templatePath) console.log('📁 Learning template created at:', result.templatePath);
+      if (result.documentsFound) console.log('📄 Documents found:', result.documentsFound);
+      if (result.documentFiles) {
+        console.log('📚 Document files:');
+        result.documentFiles.forEach(file => console.log(`  - ${file}`));
+      }
+      if (result.documentsProcessed) console.log('📊 Documents processed:', result.documentsProcessed);
+      if (result.totalDomains) console.log('🎯 Technical domains identified:', result.totalDomains);
+      if (result.questionsCount) console.log('❓ Questions created:', result.questionsCount);
+      if (result.auditTrail) console.log('🔍 Audit trail included:', 'Yes');
       
       // Handle validation warnings
       if (result.schemaValid === false) {
@@ -51,6 +62,39 @@ async function executeCommand(operation, params = {}) {
           console.log('❌', result.message);
           console.log('📄 Exam file:', result.examPath);
           console.log('\n🔍 Validation errors:');
+          result.errors.forEach((error, index) => {
+            console.log(`  ${index + 1}. ${error}`);
+          });
+          process.exit(1);
+        }
+      }
+      
+      if (operation === 'validate-evidence') {
+        if (result.valid) {
+          console.log('📊 Evidence validation passed');
+        } else {
+          console.log('❌', result.message);
+          console.log('\n🔍 Evidence validation errors:');
+          result.errors.forEach((error, index) => {
+            console.log(`  ${index + 1}. ${error}`);
+          });
+          process.exit(1);
+        }
+      }
+      
+      if (operation === 'validate-answers') {
+        if (result.valid) {
+          console.log('✅ Answer validation passed');
+          console.log(`📊 Questions: ${result.answeredQuestions}/${result.totalQuestions} answered`);
+          console.log(`📈 Average confidence: ${result.averageConfidence}`);
+          console.log('📄 Answers file:', result.answersPath);
+        } else {
+          console.log('❌', result.message);
+          console.log(`📊 Questions: ${result.answeredQuestions}/${result.totalQuestions} answered`);
+          console.log(`🔴 Blank answers: ${result.blankAnswers}`);
+          console.log(`📈 Average confidence: ${result.averageConfidence}`);
+          console.log('📄 Answers file:', result.answersPath);
+          console.log('\n🔍 Answer validation errors:');
           result.errors.forEach((error, index) => {
             console.log(`  ${index + 1}. ${error}`);
           });
@@ -101,6 +145,40 @@ program
   .description('Setup iteration directory with knowledge copy and empty answers')
   .action(async (iteration) => {
     await executeCommand('init-iter', { iterationName: iteration });
+  });
+
+// NEW HYBRID APPROACH COMMANDS
+
+// generate-learning-template command
+program
+  .command('generate-learning-template')
+  .description('Creates structured learning template from documentation files')
+  .action(async () => {
+    await executeCommand('generate-learning-template');
+  });
+
+// validate-evidence command
+program
+  .command('validate-evidence')
+  .description('Validates learning evidence for completeness and quality')
+  .action(async () => {
+    await executeCommand('validate-evidence');
+  });
+
+// assemble-exam command
+program
+  .command('assemble-exam')
+  .description('Assembles final exam from evidence and questions with audit trail')
+  .action(async () => {
+    await executeCommand('assemble-exam');
+  });
+
+// validate-answers command
+program
+  .command('validate-answers <iteration>')
+  .description('Validates answer completion and quality for an iteration')
+  .action(async (iteration) => {
+    await executeCommand('validate-answers', { iterationName: iteration });
   });
 
 // Parse command line arguments

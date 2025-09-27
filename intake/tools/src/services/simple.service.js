@@ -82,6 +82,36 @@ class Skeletons {
     };
   }
 
+  static examDraftSkeleton() {
+    return {
+      metadata: {
+        created_from_evidence: 'learning_evidence.yaml',
+        generation_timestamp: new Date().toISOString(),
+        total_questions: 0,
+        domains_covered: 0
+      },
+      questions: [
+        {
+          id: 'Q001',
+          type: 'factual|conceptual|analytical|synthesis',
+          question: 'Your question here',
+          category: 'TECHNICAL_DOMAIN_NAME',
+          difficulty: 'basic|intermediate|advanced',
+          source_domain: 'TECHNICAL_DOMAIN_NAME',
+          source_document: 'document_name.md',
+          evidence_line_refs: [0, 0, 0]
+        }
+      ],
+      solutions: [
+        {
+          id: 'Q001',
+          answer: 'Your answer here',
+          evidence_sources: ['document_name.md:line_number']
+        }
+      ]
+    };
+  }
+
   static answersFromExam(examData, iterationName) {
     return {
       metadata: {
@@ -97,6 +127,29 @@ class Skeletons {
       }))
     };
   }
+
+  static learningTemplate(documentFiles) {
+    return {
+      phase_1_2_evidence: {
+        documents_processed: documentFiles.length,
+        total_lines_read: 0,
+        processing_timestamp: "",
+        document_summaries: documentFiles.map(docPath => ({
+          document: path.basename(docPath),
+          full_path: docPath,
+          lines_read: 0,
+          technical_domains: [
+            {
+              domain: "DOMAIN_NAME_HERE",
+              key_concepts: ["concept1", "concept2", "concept3"],
+              evidence_line_refs: [0, 0, 0]
+            }
+          ],
+          verification_hash: ""
+        }))
+      }
+    };
+  }
 }
 
 /**
@@ -108,15 +161,19 @@ class Paths {
   }
 
   examFile() {
-    return path.join(this.contextDir, 'exam', 'exam.yaml');
+    return path.join(this.contextDir, 'context', 'exam.yaml');
+  }
+
+  examDraftSkeleton() {
+    return path.join(this.contextDir, 'context', 'exam_draft.yaml');
   }
 
   knowledgeBaseline() {
-    return path.join(this.contextDir, 'knowledge_iter0.json');
+    return path.join(this.contextDir, 'context', 'knowledge_iter0.json');
   }
 
   iterationDir(iterName) {
-    return path.join(this.contextDir, iterName);
+    return path.join(this.contextDir, 'context', iterName);
   }
 
   iterationKnowledge(iterName) {
@@ -133,12 +190,25 @@ class Paths {
       return this.knowledgeBaseline();
     } else {
       const prevIter = `iter${iterNum - 1}`;
-      return path.join(this.contextDir, prevIter, `knowledge_iter${iterNum - 1}.json`);
+      return path.join(this.contextDir, 'context', prevIter, `knowledge_iter${iterNum - 1}.json`);
     }
   }
 
   isValidIterName(iterName) {
     return iterName && iterName.startsWith('iter') && !isNaN(parseInt(iterName.replace('iter', '')));
+  }
+
+  // New hybrid approach paths
+  learningTemplate() {
+    return path.join(this.contextDir, 'context', 'learning_template.yaml');
+  }
+
+  learningEvidence() {
+    return path.join(this.contextDir, 'context', 'learning_evidence.yaml');
+  }
+
+  examDraft() {
+    return path.join(this.contextDir, 'context', 'exam_draft.yaml');
   }
 }
 

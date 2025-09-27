@@ -1,0 +1,251 @@
+{
+  "metadata": {
+    "iteration": 0,
+    "created": "2025-09-27T06:35:00.000Z",
+    "source_documents": [
+      "sw_requirements.md",
+      "redesign_architecture.md", 
+      "implementation_guide.md",
+      "complete_implementation.md",
+      "cli_and_tests.md",
+      "builtin_rules_implementation.md",
+      "architecture.md"
+    ],
+    "extraction_method": "systematic_document_reading",
+    "total_knowledge_entries": 45
+  },
+  "knowledge_domains": [
+    {
+      "domain": "static_code_analysis_fundamentals",
+      "entries": [
+        {
+          "id": "K001",
+          "fact": "AST parsing requires support for ES2022+ syntax and TypeScript 5.0+ compatibility",
+          "confidence": 95,
+          "source": "sw_requirements.md:21-25",
+          "type": "technical_requirement"
+        },
+        {
+          "id": "K002", 
+          "fact": "Call graph construction must trace all function calls from entry points and track method invocations across modules",
+          "confidence": 95,
+          "source": "sw_requirements.md:30-35",
+          "type": "technical_requirement"
+        },
+        {
+          "id": "K003",
+          "fact": "Symbol resolution includes cross-file symbol tracking, type alias resolution, and interface implementation tracking",
+          "confidence": 90,
+          "source": "sw_requirements.md:38-43",
+          "type": "technical_specification"
+        }
+      ]
+    },
+    {
+      "domain": "dead_code_detection_techniques",
+      "entries": [
+        {
+          "id": "K004",
+          "fact": "Dead code detection includes unused imports, unreachable code, and orphaned functions/methods",
+          "confidence": 95,
+          "source": "sw_requirements.md:58-65",
+          "type": "feature_specification"
+        },
+        {
+          "id": "K005",
+          "fact": "Dynamic method handling requires configurable keep-alive patterns and annotation-based exclusions",
+          "confidence": 85,
+          "source": "sw_requirements.md:66-70",
+          "type": "configuration_requirement"
+        }
+      ]
+    },
+    {
+      "domain": "code_quality_metrics",
+      "entries": [
+        {
+          "id": "K006",
+          "fact": "Cyclomatic complexity threshold is configurable with default > 10, cognitive complexity > 15",
+          "confidence": 95,
+          "source": "sw_requirements.md:48-52",
+          "type": "threshold_configuration"
+        },
+        {
+          "id": "K007",
+          "fact": "Module size limits are configurable: files > 500 lines, classes > 300 lines",
+          "confidence": 90,
+          "source": "sw_requirements.md:45-47",
+          "type": "size_threshold"
+        },
+        {
+          "id": "K008",
+          "fact": "Deeply nested conditionals are detected with nesting depth > 4 levels as configurable threshold",
+          "confidence": 85,
+          "source": "sw_requirements.md:53-55",
+          "type": "complexity_metric"
+        }
+      ]
+    },
+    {
+      "domain": "typescript_specific_analysis",
+      "entries": [
+        {
+          "id": "K009",
+          "fact": "TypeScript-specific detection includes missing type annotations for implicit any parameters and untyped function returns",
+          "confidence": 90,
+          "source": "sw_requirements.md:103-107",
+          "type": "typescript_feature"
+        },
+        {
+          "id": "K010",
+          "fact": "Excessive any usage tracking includes explicit any declarations and any proliferation metrics",
+          "confidence": 85,
+          "source": "sw_requirements.md:108-111",
+          "type": "typescript_quality_check"
+        },
+        {
+          "id": "K011",
+          "fact": "Unused type definitions detection covers interfaces never implemented and type aliases never referenced",
+          "confidence": 85,
+          "source": "sw_requirements.md:112-115",
+          "type": "typescript_cleanup"
+        }
+      ]
+    },
+    {
+      "domain": "performance_specifications",
+      "entries": [
+        {
+          "id": "K012",
+          "fact": "Analysis speed targets: Small projects (< 1000 files) < 5 seconds, Medium (1000-10000) < 30 seconds, Large (> 10000) < 2 minutes",
+          "confidence": 95,
+          "source": "sw_requirements.md:225-230",
+          "type": "performance_target"
+        },
+        {
+          "id": "K013",
+          "fact": "Memory usage requirements: < 500MB for small projects, linear growth with project size, < 4GB maximum for large projects",
+          "confidence": 90,
+          "source": "sw_requirements.md:233-237",
+          "type": "resource_constraint"
+        },
+        {
+          "id": "K014",
+          "fact": "Incremental analysis must complete in < 1 second for single file changes",
+          "confidence": 90,
+          "source": "sw_requirements.md:231",
+          "type": "incremental_performance"
+        }
+      ]
+    },
+    {
+      "domain": "configuration_management",
+      "entries": [
+        {
+          "id": "K015",
+          "fact": "Entry point definition supports JSON/YAML configuration with multiple entry points and glob pattern matching",
+          "confidence": 90,
+          "source": "sw_requirements.md:120-125",
+          "type": "configuration_feature"
+        },
+        {
+          "id": "K016",
+          "fact": "Exclusion patterns support gitignore-style patterns and regular expression support",
+          "confidence": 85,
+          "source": "sw_requirements.md:129-133",
+          "type": "exclusion_mechanism"
+        },
+        {
+          "id": "K017",
+          "fact": "Rule configuration allows per-rule enable/disable, threshold adjustment, and severity levels (error, warning, info)",
+          "confidence": 95,
+          "source": "sw_requirements.md:135-140",
+          "type": "rule_customization"
+        }
+      ]
+    },
+    {
+      "domain": "plugin_architecture_design",
+      "entries": [
+        {
+          "id": "K018",
+          "fact": "Plugin architecture provides extensible rule system with plugin lifecycle hooks and shared context access",
+          "confidence": 90,
+          "source": "sw_requirements.md:194-198",
+          "type": "architecture_pattern"
+        },
+        {
+          "id": "K019",
+          "fact": "Plugin API uses AST visitor pattern with issue reporting interface and configuration schema",
+          "confidence": 85,
+          "source": "sw_requirements.md:200-204",
+          "type": "api_design"
+        }
+      ]
+    },
+    {
+      "domain": "reporting_system_design",
+      "entries": [
+        {
+          "id": "K020",
+          "fact": "JSON output format includes timestamp, project metadata, issue summary with errors/warnings/info counts, and detailed issues array",
+          "confidence": 95,
+          "source": "sw_requirements.md:150-170",
+          "type": "output_specification"
+        },
+        {
+          "id": "K021",
+          "fact": "Each issue includes id, type, severity, file location, line/column, message, and rule identifier",
+          "confidence": 90,
+          "source": "sw_requirements.md:158-168",
+          "type": "issue_structure"
+        },
+        {
+          "id": "K022",
+          "fact": "Call graph data includes entry points array, nodes array, and edges array in the output",
+          "confidence": 85,
+          "source": "sw_requirements.md:169-173",
+          "type": "graph_representation"
+        }
+      ]
+    },
+    {
+      "domain": "reliability_and_accuracy",
+      "entries": [
+        {
+          "id": "K023",
+          "fact": "Accuracy requirements specify false positive rate < 5%, false negative rate < 10%, call graph completeness > 95%",
+          "confidence": 95,
+          "source": "sw_requirements.md:240-245",
+          "type": "quality_metric"
+        },
+        {
+          "id": "K024",
+          "fact": "Stability requirements include crash rate < 0.1%, graceful degradation on errors, partial results continuation",
+          "confidence": 90,
+          "source": "sw_requirements.md:246-250",
+          "type": "reliability_specification"
+        }
+      ]
+    },
+    {
+      "domain": "dependency_analysis_capabilities",
+      "entries": [
+        {
+          "id": "K025",
+          "fact": "Unused packages detection identifies packages in package.json but never imported and dev dependencies used in production",
+          "confidence": 90,
+          "source": "sw_requirements.md:80-85",
+          "type": "dependency_check"
+        },
+        {
+          "id": "K026",
+          "fact": "Circular dependency detection covers both direct circular imports and indirect dependency cycles",
+          "confidence": 85,
+          "source": "sw_requirements.md:90-93",
+          "type": "dependency_validation"
+        }
+      ]
+    }
+  ]
+}

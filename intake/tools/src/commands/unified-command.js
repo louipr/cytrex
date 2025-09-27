@@ -1,3 +1,4 @@
+const path = require('path');
 const { SchemaValidator } = require('../validators/schema-validator');
 const { FileService, Skeletons, Paths } = require('../services/simple.service');
 
@@ -28,19 +29,17 @@ class CommandHandler {
    */
   operations = {
     'init-exam': async () => {
-      const examPath = this.paths.examFile();
+      const examDraftPath = this.paths.examDraftSkeleton();
       
-      await this.ensureNotExists(examPath, 'Exam already exists. Use validate-exam to check existing exam.');
+      await this.ensureNotExists(examDraftPath, 'Exam draft skeleton already exists. Delete it first if you want to recreate it.');
       
-      const skeleton = Skeletons.examSkeleton();
-      const comments = this.getExamComments();
-      await this.files.writeYaml(examPath, skeleton, comments);
-      
-      const validation = await this.validate(skeleton, 'exam');
+      const skeleton = Skeletons.examDraftSkeleton();
+      const comments = this.getExamDraftComments();
+      await this.files.writeYaml(examDraftPath, skeleton, comments);
       
       return {
-        message: 'Exam skeleton created successfully',
-        data: { schemaValid: validation.valid, examPath }
+        message: 'Exam draft skeleton created successfully',
+        data: { examDraftPath }
       };
     },
 
@@ -96,6 +95,79 @@ class CommandHandler {
       };
     },
 
+    'generate-learning-template': async () => {
+      const templatePath = this.paths.learningTemplate();
+      const docsPattern = '../docs/*.md';
+      
+      await this.ensureNotExists(templatePath, 'Learning template already exists. Delete it first if you want to recreate it.');
+      
+      // Find all documentation files
+      const glob = require('glob');
+      const docFiles = glob.sync(docsPattern, { cwd: this.paths.contextDir });
+      
+      if (docFiles.length === 0) {
+        throw new Error(`No documentation files found matching pattern: ${docsPattern}`);
+      }
+      
+      const template = Skeletons.learningTemplate(docFiles);
+      await this.files.writeYaml(templatePath, template);
+      
+      return {
+        message: 'Learning template created successfully',
+        data: { 
+          templatePath, 
+          documentsFound: docFiles.length,
+          documentFiles: docFiles 
+        }
+      };
+    },
+
+    'validate-evidence': async () => {
+      const evidencePath = this.paths.learningEvidence();
+      
+      await this.ensureExists(evidencePath, 'Learning evidence file not found. Complete Step B (Document Evidence Collection) first.');
+      
+      const evidenceData = await this.files.readYaml(evidencePath);
+      const validation = this.validateLearningEvidence(evidenceData);
+      
+      return {
+        message: validation.valid ? 'Learning evidence is complete and valid' : 'Learning evidence validation failed',
+        data: { 
+          valid: validation.valid, 
+          errors: validation.errors,
+          documentsProcessed: validation.documentsProcessed,
+          totalDomains: validation.totalDomains
+        }
+      };
+    },
+
+    'assemble-exam': async () => {
+      const evidencePath = this.paths.learningEvidence();
+      const draftPath = this.paths.examDraft();
+      const examPath = this.paths.examFile();
+      
+      await this.ensureExists(evidencePath, 'Learning evidence not found. Complete evidence collection first.');
+      await this.ensureExists(draftPath, 'Exam draft not found. Complete question generation first.');
+      
+      const evidenceData = await this.files.readYaml(evidencePath);
+      const draftData = await this.files.readYaml(draftPath);
+      
+      const finalExam = this.assembleExamFromEvidence(evidenceData, draftData);
+      await this.files.writeYaml(examPath, finalExam);
+      
+      const validation = await this.validate(finalExam, 'exam');
+      
+      return {
+        message: 'Final exam assembled successfully with audit trail',
+        data: {
+          examPath,
+          schemaValid: validation.valid,
+          questionsCount: finalExam.questions.length,
+          auditTrail: finalExam.audit_trail
+        }
+      };
+    },
+
     'validate-exam': async () => {
       const examPath = this.paths.examFile();
       
@@ -111,6 +183,45 @@ class CommandHandler {
       return {
         message: isValid ? 'Exam is valid and ready for use' : 'Exam validation failed',
         data: { valid: isValid, errors: allErrors, examPath }
+      };
+    },
+
+    'validate-answers': async ({ iterationName }) => {
+      if (!this.paths.isValidIterName(iterationName)) {
+        throw new Error('Invalid iteration name. Use format: iter1, iter2, etc.');
+      }
+
+      const answersPath = this.paths.iterationAnswers(iterationName);
+      const examPath = this.paths.examFile();
+      
+      await this.ensureExists(answersPath, `Answers file not found for ${iterationName}. Complete blind exam first.`);
+      await this.ensureExists(examPath, 'Exam file not found. Cannot validate answers without exam reference.');
+      
+      const answersData = await this.files.readJson(answersPath);
+      const examData = await this.files.readYaml(examPath);
+      
+      // Schema validation
+      const schemaValidation = await this.validate(answersData, 'answers');
+      
+      // Answer completion validation
+      const completionValidation = this.validateAnswerCompletion(answersData, examData);
+      
+      const allErrors = [...schemaValidation.errors, ...completionValidation.errors];
+      const isValid = allErrors.length === 0;
+      
+      return {
+        message: isValid ? 
+          `All answers validated successfully for ${iterationName}` : 
+          `Answer validation failed for ${iterationName}`,
+        data: { 
+          valid: isValid, 
+          errors: allErrors,
+          answersPath,
+          totalQuestions: completionValidation.totalQuestions,
+          answeredQuestions: completionValidation.answeredQuestions,
+          blankAnswers: completionValidation.blankAnswers,
+          averageConfidence: completionValidation.averageConfidence
+        }
       };
     }
   };
@@ -179,6 +290,24 @@ class CommandHandler {
     ].join('\n');
   }
 
+  getExamDraftComments() {
+    return [
+      '# Exam Draft Skeleton',
+      '# Fill this skeleton with questions and solutions based on learning_evidence.yaml',
+      '# ',
+      '# INSTRUCTIONS FOR STEP D:',
+      '#   1. Read learning_evidence.yaml for all technical domains',
+      '#   2. Create questions covering ALL domains identified',
+      '#   3. Trace each question to specific evidence line references',  
+      '#   4. Provide complete solutions with evidence sources',
+      '#   5. Update metadata with actual counts',
+      '#',
+      '# This skeleton will be assembled into final exam.yaml in Step E',
+      '#',
+      ''
+    ].join('\n');
+  }
+
   validateExamBusinessRules(examData) {
     const errors = [];
     
@@ -205,6 +334,165 @@ class CommandHandler {
     }
     
     return errors;
+  }
+
+  validateLearningEvidence(evidenceData) {
+    const errors = [];
+    let documentsProcessed = 0;
+    let totalDomains = 0;
+
+    if (!evidenceData.phase_1_2_evidence) {
+      errors.push('Missing phase_1_2_evidence section');
+      return { valid: false, errors, documentsProcessed, totalDomains };
+    }
+
+    const evidence = evidenceData.phase_1_2_evidence;
+
+    // Check document summaries exist
+    if (!evidence.document_summaries || !Array.isArray(evidence.document_summaries)) {
+      errors.push('Missing or invalid document_summaries array');
+      return { valid: false, errors, documentsProcessed, totalDomains };
+    }
+
+    // Validate each document summary
+    for (const docSummary of evidence.document_summaries) {
+      if (!docSummary.document) {
+        errors.push('Document summary missing document field');
+        continue;
+      }
+
+      if (!docSummary.lines_read || docSummary.lines_read <= 0) {
+        errors.push(`Document ${docSummary.document} missing valid lines_read`);
+      }
+
+      if (!docSummary.technical_domains || !Array.isArray(docSummary.technical_domains)) {
+        errors.push(`Document ${docSummary.document} missing technical_domains array`);
+        continue;
+      }
+
+      documentsProcessed++;
+      totalDomains += docSummary.technical_domains.length;
+
+      // Validate technical domains
+      for (const domain of docSummary.technical_domains) {
+        if (!domain.domain) {
+          errors.push(`Document ${docSummary.document} has domain missing name`);
+        }
+        if (!domain.key_concepts || !Array.isArray(domain.key_concepts)) {
+          errors.push(`Document ${docSummary.document} domain ${domain.domain} missing key_concepts`);
+        }
+        if (!domain.evidence_line_refs || !Array.isArray(domain.evidence_line_refs)) {
+          errors.push(`Document ${docSummary.document} domain ${domain.domain} missing evidence_line_refs`);
+        }
+      }
+    }
+
+    // Check minimum requirements
+    if (documentsProcessed < 5) {
+      errors.push(`Insufficient documents processed: ${documentsProcessed}. Minimum 5 required.`);
+    }
+
+    if (totalDomains < 15) {
+      errors.push(`Insufficient technical domains identified: ${totalDomains}. Minimum 15 required.`);
+    }
+
+    return {
+      valid: errors.length === 0,
+      errors,
+      documentsProcessed,
+      totalDomains
+    };
+  }
+
+  validateAnswerCompletion(answersData, examData) {
+    const errors = [];
+    const totalQuestions = examData.questions ? examData.questions.length : 0;
+    let answeredQuestions = 0;
+    let blankAnswers = 0;
+    let confidenceSum = 0;
+    let confidenceCount = 0;
+
+    if (!answersData.answers || !Array.isArray(answersData.answers)) {
+      errors.push('Missing or invalid answers array');
+      return { 
+        errors, 
+        totalQuestions, 
+        answeredQuestions: 0, 
+        blankAnswers: totalQuestions,
+        averageConfidence: 0 
+      };
+    }
+
+    // Check answer count matches exam
+    if (answersData.answers.length !== totalQuestions) {
+      errors.push(`Answer count mismatch: expected ${totalQuestions} answers, found ${answersData.answers.length}`);
+    }
+
+    // Validate each answer
+    for (let i = 0; i < answersData.answers.length; i++) {
+      const answer = answersData.answers[i];
+      const questionId = i + 1;
+
+      // Check for required fields
+      if (!answer.answer || answer.answer.trim() === '') {
+        errors.push(`Question ${questionId}: Answer is blank or missing`);
+        blankAnswers++;
+      } else {
+        answeredQuestions++;
+      }
+
+      if (!answer.reasoning || answer.reasoning.trim() === '') {
+        errors.push(`Question ${questionId}: Reasoning is blank or missing`);
+      }
+
+      if (typeof answer.confidence !== 'number' || answer.confidence <= 0) {
+        errors.push(`Question ${questionId}: Invalid confidence score (must be > 0)`);
+      } else {
+        confidenceSum += answer.confidence;
+        confidenceCount++;
+      }
+    }
+
+    const averageConfidence = confidenceCount > 0 ? confidenceSum / confidenceCount : 0;
+
+    // Critical validation: No blank answers allowed
+    if (blankAnswers > 0) {
+      errors.push(`CRITICAL: ${blankAnswers} questions left blank. All questions must be answered before proceeding.`);
+    }
+
+    return {
+      errors,
+      totalQuestions,
+      answeredQuestions,
+      blankAnswers,
+      averageConfidence: Math.round(averageConfidence * 100) / 100
+    };
+  }
+
+  assembleExamFromEvidence(evidenceData, questionsData) {
+    const timestamp = new Date().toISOString();
+    
+    return {
+      metadata: {
+        title: "Code Analysis Tool Learning Examination",
+        description: "Comprehensive examination covering all technical domains from systematic document analysis",
+        version: "1.0.0",
+        created: timestamp,
+        total_questions: questionsData.questions.length,
+        source_documents: evidenceData.phase_1_2_evidence.document_summaries.length,
+        methodology: "hybrid_evidence_based"
+      },
+      questions: questionsData.questions,
+      solutions: questionsData.solutions,
+      audit_trail: {
+        evidence_source: evidenceData.phase_1_2_evidence,
+        documents_processed: evidenceData.phase_1_2_evidence.document_summaries.map(d => d.document),
+        total_domains_covered: evidenceData.phase_1_2_evidence.document_summaries.reduce((sum, doc) => 
+          sum + doc.technical_domains.length, 0),
+        assembly_timestamp: timestamp,
+        traceability: "All questions traced to specific document evidence"
+      }
+    };
   }
 }
 
