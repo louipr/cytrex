@@ -214,7 +214,7 @@ export interface PatternDefinition {
 export interface ConfidenceConfig {
   minimumThreshold: number; // Default: 50 (reduced from typical 80)
   architecturalCoreMultiplier: number; // Default: 0.5
-  dynamicPatternBonus: number; // Default: 20
+  dynamicPatternBonus: number; // Default: 20 - PENALTY applied when dynamic patterns are detected (reduces confidence)
 }
 
 export enum DependencyType {
@@ -282,6 +282,7 @@ export interface ITypeScriptCompilerService {
 }
 
 export interface IDependencyGraph {
+  addFile(filePath: string): void;
   addDependency(from: string, to: string, type: DependencyType): void;
   addEntryPoint(filePath: string): void;
   findReachable(): Set<string>;

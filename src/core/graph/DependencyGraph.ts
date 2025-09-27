@@ -53,19 +53,24 @@ export class DependencyGraph implements IDependencyGraph {
     }
   }
 
-  addEntryPoint(filePath: string): void {
-    const normalized = path.resolve(filePath);
-    this.entryPoints.add(normalized);
+  addFile(filePath: string): void {
+    const normalizedPath = path.resolve(filePath);
     
-    // Ensure entry point exists as a node
-    if (!this.nodes.has(normalized)) {
-      this.nodes.set(normalized, this.createNode(normalized, true));
-    } else {
-      this.nodes.get(normalized)!.isEntryPoint = true;
+    // Add file as a node if it doesn't exist
+    if (!this.nodes.has(normalizedPath)) {
+      this.nodes.set(normalizedPath, this.createNode(normalizedPath));
     }
   }
 
-  findReachable(): Set<string> {
+  addEntryPoint(filePath: string): void {
+    const normalizedPath = path.resolve(filePath);
+    this.entryPoints.add(normalizedPath);
+
+    // Ensure entry point exists as a node
+    if (!this.nodes.has(normalizedPath)) {
+      this.nodes.set(normalizedPath, this.createNode(normalizedPath, true));
+    }
+  }  findReachable(): Set<string> {
     const visited = new Set<string>();
     const queue = Array.from(this.entryPoints);
 

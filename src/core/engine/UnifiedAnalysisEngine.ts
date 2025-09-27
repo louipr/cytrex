@@ -95,6 +95,13 @@ export class UnifiedAnalysisEngine implements IUnifiedAnalysisEngine {
     const sourceFiles = program.getSourceFiles()
       .filter(sf => !sf.isDeclarationFile && !sf.fileName.includes('node_modules'));
 
+    // CRITICAL FIX: Add ALL source files to dependency graph first
+    // This ensures standalone files (no imports/exports) are tracked for dead code detection
+    for (const sourceFile of sourceFiles) {
+      this.graph.addFile(sourceFile.fileName);
+    }
+
+    // Then extract dependencies between files
     for (const sourceFile of sourceFiles) {
       this.extractFileDependencies(sourceFile);
     }
@@ -174,10 +181,15 @@ export class UnifiedAnalysisEngine implements IUnifiedAnalysisEngine {
           confidence *= coreMultiplier;
         }
         
-        // Boost confidence if no dynamic usage detected
-        if (!this.hasAnyDynamicUsage(file, dynamicUsage)) {
-          confidence += (config?.confidenceThresholds?.dynamicPatternBonus ?? 20);
+        // Reduce confidence if dynamic usage patterns detected
+        // Files with dynamic usage are less likely to be truly dead
+        if (this.hasAnyDynamicUsage(file, dynamicUsage)) {
+          const dynamicPenalty = config?.confidenceThresholds?.dynamicPatternBonus ?? 20;
+          confidence -= dynamicPenalty;
         }
+
+        // Cap confidence between 0% and 100%
+        confidence = Math.max(0, Math.min(confidence, 100));
 
         if (confidence >= threshold) {
           dead.push({

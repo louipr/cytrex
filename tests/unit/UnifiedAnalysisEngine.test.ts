@@ -269,9 +269,9 @@ export class PartiallyReferenced {}
 // Architectural core file - should have reduced confidence
 export class ApplicationContainer {}
 `,
-        'RegularService.ts': `
-// Regular unused file
-export class RegularService {}
+        'RegularUtils.ts': `
+// Regular unused file - NOT architectural core
+export class RegularUtils {}
 `
       });
 
@@ -282,7 +282,7 @@ export class RegularService {}
       expect(result.deadFiles).toHaveLength(2);
       
       const containerFile = result.deadFiles.find(df => df.path.includes('ApplicationContainer'));
-      const regularFile = result.deadFiles.find(df => df.path.includes('RegularService'));
+      const regularFile = result.deadFiles.find(df => df.path.includes('RegularUtils'));
       
       // Architectural core files should have lower confidence due to multiplier
       expect(containerFile?.confidence).toBeLessThan(regularFile?.confidence || 100);
