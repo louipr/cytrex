@@ -12,13 +12,11 @@ describe('DependencyGraph', () => {
     test('should track files correctly through dependencies', () => {
       // Arrange & Act - files are created implicitly when adding dependencies
       graph.addDependency('/project/main.ts', '/project/used.ts', DependencyType.IMPORT);
-      graph.addDependency('/project/main.ts', '/project/dead.ts', DependencyType.IMPORT); // This makes dead.ts reachable
 
       // Assert
-      expect(graph.getAllFiles()).toHaveLength(3);
+      expect(graph.getAllFiles()).toHaveLength(2);
       expect(graph.getAllFiles()).toContain('/project/main.ts');
       expect(graph.getAllFiles()).toContain('/project/used.ts');
-      expect(graph.getAllFiles()).toContain('/project/dead.ts');
     });
 
     test('should track dependencies correctly', () => {
@@ -33,54 +31,54 @@ describe('DependencyGraph', () => {
 
   describe('Reachability Analysis - The Core Bug', () => {
     test('should mark only reachable files from entry points', () => {
-      // Arrange
-      graph.addFile('/project/main.ts');     // Entry point
-      graph.addFile('/project/used.ts');     // Used by main
-      graph.addFile('/project/dead.ts');     // Not used by anyone
+      // Arrange - Create files through dependencies
+      graph.addDependency('/project/main.ts', '/project/used.ts', DependencyType.IMPORT);
+      graph.addDependency('/project/orphan.ts', '/project/dead.ts', DependencyType.IMPORT); // Creates dead file but not reachable from main
       
-      graph.addDependency('/project/main.ts', '/project/used.ts');
-      // Note: dead.ts has NO dependencies pointing to it
+      // Set main as entry point (THIS IS THE KEY!)
+      graph.addEntryPoint('/project/main.ts');
 
       // Act
-      const reachable = graph.findReachable(['/project/main.ts']);
+      const reachable = graph.findReachable();
 
       // Assert - This is where the bug likely is
-      console.log('Entry points:', ['/project/main.ts']);
+      console.log('Entry points internal:', Array.from((graph as any).entryPoints));
       console.log('All files:', graph.getAllFiles());
       console.log('Dependencies from main:', graph.getDependencies('/project/main.ts'));
       console.log('Reachable files:', Array.from(reachable));
       
       expect(reachable.has('/project/main.ts')).toBe(true);
       expect(reachable.has('/project/used.ts')).toBe(true);
-      expect(reachable.has('/project/dead.ts')).toBe(false); // This is probably failing
+      expect(reachable.has('/project/orphan.ts')).toBe(false); // Should not be reachable
+      expect(reachable.has('/project/dead.ts')).toBe(false); // Should not be reachable
     });
 
     test('should handle multiple entry points', () => {
       // Arrange
-      graph.addFile('/project/main.ts');     
-      graph.addFile('/project/cli.ts');     
-      graph.addFile('/project/shared.ts');  // Used by both
-      graph.addFile('/project/dead.ts');    // Used by neither
+      graph.addDependency('/project/main.ts', '/project/shared.ts', DependencyType.IMPORT);
+      graph.addDependency('/project/cli.ts', '/project/shared.ts', DependencyType.IMPORT);
+      graph.addDependency('/project/orphan.ts', '/project/dead.ts', DependencyType.IMPORT); // Not reachable
       
-      graph.addDependency('/project/main.ts', '/project/shared.ts');
-      graph.addDependency('/project/cli.ts', '/project/shared.ts');
+      graph.addEntryPoint('/project/main.ts');
+      graph.addEntryPoint('/project/cli.ts');
 
       // Act
-      const reachable = graph.findReachable(['/project/main.ts', '/project/cli.ts']);
+      const reachable = graph.findReachable();
 
       // Assert
       expect(reachable.has('/project/main.ts')).toBe(true);
       expect(reachable.has('/project/cli.ts')).toBe(true);
       expect(reachable.has('/project/shared.ts')).toBe(true);
+      expect(reachable.has('/project/orphan.ts')).toBe(false);
       expect(reachable.has('/project/dead.ts')).toBe(false);
     });
 
-    test('should handle empty entry points', () => {
+    test('should handle no entry points', () => {
       // Arrange
-      graph.addFile('/project/orphan.ts');
+      graph.addDependency('/project/orphan.ts', '/project/other.ts', DependencyType.IMPORT);
 
-      // Act
-      const reachable = graph.findReachable([]);
+      // Act - No entry points set
+      const reachable = graph.findReachable();
 
       // Assert
       expect(reachable.size).toBe(0);
@@ -88,22 +86,21 @@ describe('DependencyGraph', () => {
 
     test('should handle circular dependencies', () => {
       // Arrange
-      graph.addFile('/project/main.ts');     
-      graph.addFile('/project/a.ts');       
-      graph.addFile('/project/b.ts');       // a -> b -> a (circular)
-      graph.addFile('/project/dead.ts');    
+      graph.addDependency('/project/main.ts', '/project/a.ts', DependencyType.IMPORT);
+      graph.addDependency('/project/a.ts', '/project/b.ts', DependencyType.IMPORT);
+      graph.addDependency('/project/b.ts', '/project/a.ts', DependencyType.IMPORT); // circular
+      graph.addDependency('/project/orphan.ts', '/project/dead.ts', DependencyType.IMPORT); // separate
       
-      graph.addDependency('/project/main.ts', '/project/a.ts');
-      graph.addDependency('/project/a.ts', '/project/b.ts');
-      graph.addDependency('/project/b.ts', '/project/a.ts'); // circular
+      graph.addEntryPoint('/project/main.ts');
 
       // Act
-      const reachable = graph.findReachable(['/project/main.ts']);
+      const reachable = graph.findReachable();
 
       // Assert
       expect(reachable.has('/project/main.ts')).toBe(true);
       expect(reachable.has('/project/a.ts')).toBe(true);
       expect(reachable.has('/project/b.ts')).toBe(true);
+      expect(reachable.has('/project/orphan.ts')).toBe(false);
       expect(reachable.has('/project/dead.ts')).toBe(false);
     });
   });
@@ -111,25 +108,27 @@ describe('DependencyGraph', () => {
   describe('Debug Specific Scenario', () => {
     test('should reproduce exact issue from failing integration tests', () => {
       // Recreate the scenario from our failing tests
-      graph.addFile('/test/main.ts');
-      graph.addFile('/test/DeadService.ts');
+      // Only create main.ts as entry point, DeadService.ts should be unreachable
+      graph.addDependency('/test/main.ts', '/test/UsedService.ts', DependencyType.IMPORT);
+      graph.addDependency('/test/unused.ts', '/test/DeadService.ts', DependencyType.IMPORT); // Dead branch
       
-      // main.ts does NOT import DeadService.ts
-      // So there should be no dependency
+      graph.addEntryPoint('/test/main.ts');
       
       // Act
-      const reachable = graph.findReachable(['/test/main.ts']);
+      const reachable = graph.findReachable();
       
       // Debug output
       console.log('\n=== DEBUG SCENARIO ===');
       console.log('Files:', graph.getAllFiles());
-      console.log('Entry points:', ['/test/main.ts']);
+      console.log('Entry points set:', Array.from((graph as any).entryPoints));
       console.log('Dependencies from main:', graph.getDependencies('/test/main.ts'));
       console.log('Reachable:', Array.from(reachable));
       console.log('Should DeadService be reachable?', reachable.has('/test/DeadService.ts'));
       
       // Assert
       expect(reachable.has('/test/main.ts')).toBe(true);
+      expect(reachable.has('/test/UsedService.ts')).toBe(true);
+      expect(reachable.has('/test/unused.ts')).toBe(false);
       expect(reachable.has('/test/DeadService.ts')).toBe(false);
     });
   });
